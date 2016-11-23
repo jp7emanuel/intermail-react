@@ -1,0 +1,7 @@
+.DS_Store
+/node_modules
+.env*
+!.env.example
+/public/css/*
+/public/js/*
+/public/fonts/*
