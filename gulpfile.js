@@ -5,5 +5,8 @@ elixir.config.assetsPath = 'src/styles';
 elixir((mix) => {
   mix.sass([
     'app.scss'
-  ], 'public/css/3rd-party.css');
+  ], 'src/styles/css/3rd-party.css');
+  mix.styles([
+    '3rd-party.css'
+  ], 'public/css/app.css');
 });
