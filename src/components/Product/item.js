@@ -19,22 +19,15 @@ const styles = {
 }
 
 class Product extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      product: props.informations
-    }
-  }
-
   render() {
     return (
       <div className="thumbnail well text-center clearfix" style={styles.thumbnail}>
-        <form >
+        <form>
           <button style={styles.close} onClick={this.props.delete}>x</button>
-          <img src={this.state.product.img} alt="asdasdasd"/>
+          <img src={this.props.informations.img} alt="asdasdasd"/>
           <div className="caption">
-            <h3>{this.state.product.title} - R$ {this.state.product.price}</h3>
-            <p>{this.state.product.description}</p>
+            <h3>{this.props.informations.title} - R$ {this.props.informations.price}</h3>
+            <p>{this.props.informations.description}</p>
           </div>
           <button type="submit" className="btn btn-primary pull-right" onClick={this.props.save}>Salvar</button>
         </form>
