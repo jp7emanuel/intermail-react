@@ -13,26 +13,31 @@ const styles = {
     color: 'white',
   },
   thumbnail: {
-    position: 'relative'
+    position: 'relative',
+    marginBottom: '2.5em'
   }
 }
 
 class Product extends Component {
   constructor(props) {
     super(props);
-    this.product = props.informations;
+    this.state = {
+      product: props.informations
+    }
   }
+
   render() {
     return (
       <div className="thumbnail well text-center clearfix" style={styles.thumbnail}>
-        <button style={styles.close}>x</button>
-        <img src={this.product.img} alt="asdasdasd"/>
-        <div className="caption">
-          <h3>{this.product.title} - R$ {this.product.price}</h3>
-          <p>{this.product.description}</p>
-        </div>
-
-        <button className="btn btn-primary pull-right">Salvar</button>
+        <form >
+          <button style={styles.close} onClick={this.props.delete}>x</button>
+          <img src={this.state.product.img} alt="asdasdasd"/>
+          <div className="caption">
+            <h3>{this.state.product.title} - R$ {this.state.product.price}</h3>
+            <p>{this.state.product.description}</p>
+          </div>
+          <button type="submit" className="btn btn-primary pull-right" onClick={this.props.save}>Salvar</button>
+        </form>
       </div>
     );
   }
