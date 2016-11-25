@@ -25,14 +25,25 @@ class ProductList extends Component {
     super(props);
     this.state = {
       list: this.props.list,
-      addProduct: false
+      addProduct: true
     }
   }
 
-  _makeProduct() {
-    this.setState({
-      addProduct: !this.state.addProduct
-    });
+  makeProduct() {
+    if (this.state.addProduct) {
+      let newProduct = {
+        _id: 'new_product',
+        title: '',
+        description: '',
+        price: ''
+      };
+      this.setState({
+        list: update(this.state.list, {
+          $unshift: [newProduct]
+        }),
+        addProduct: false
+      });
+    }
   }
 
   deleteProduct(productId) {
@@ -40,40 +51,48 @@ class ProductList extends Component {
     this.setState({
       list: update(this.state.list, {
         $splice: [[index, 1]]
-      })
+      }),
+      addProduct: true
     });
+
+  }
+
+  storeProduct(product) {
+    var index = 0;
+    if (product._id === 'new_product') {
+      var lastItemId = _.last(this.state.list)._id;
+      product._id = lastItemId+1;
+    } else {
+      index = this.state.list.findIndex(item => item._id === product._id);
+    }
+
+    this.setState(update(this.state, {
+      list: {
+        [index]: {$merge: product}
+      },
+      addProduct: {$set: false}
+    }));
+
+    this.forceUpdate();
   }
 
   render() {
     console.log(this.state.list);
-
     const productsListRendered = this.state.list.map((product, i) => {
       return (
         <div key={product._id} className="thumbnail well text-center clearfix" style={styles.thumbnail}>
-          <Product product={product} delete={this.deleteProduct.bind(this)} edit={true} />
+          <Product product={product} delete={this.deleteProduct.bind(this)} store={this.storeProduct.bind(this)} />
         </div>
       );
     });
-
-    let newProductRendered = null;
-    if (this.state.addProduct) {
-      newProductRendered = (
-        <div className="clearfix" style={styles.addProductRow}>
-            <div className="col-xs-12 well">
-              <Product product={[]} delete={this.deleteProduct.bind(this)} store={true}/>
-            </div>
-        </div>
-      );
-    }
 
     return (
       <div>
         <div className="row" style={styles.row}>
           <div className="col-xs-12">
-            <a href="#" className="btn btn btn-warning" style={styles.btnWarning} onClick={this._makeProduct.bind(this)}>Adicionar Produto</a>
+            <button className="btn btn btn-warning" style={styles.btnWarning} onClick={this.makeProduct.bind(this)}>Adicionar Produto</button>
           </div>
         </div>
-        { newProductRendered }
         { productsListRendered }
       </div>
     );

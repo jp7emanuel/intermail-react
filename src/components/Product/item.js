@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ProductForm from './form';
 import ProductInfo from './info';
-import update from 'react-addons-update';
 
 const styles = {
     close: {
@@ -22,13 +21,12 @@ class Product extends Component {
     super(props);
     this.state = {
       product: {
-        _id: this.props.product._id || '',
-        title: this.props.product.title || '',
-        description: this.props.product.description || '',
-        price: this.props.product.price || ''
+        _id : this.props.product._id,
+        title : this.props.product.title,
+        description : this.props.product.description,
+        price : this.props.product.price
       },
-      editBtn: this.props.edit ? true : false,
-      closeBtn: this.props.store ? false : true
+      editBtn: this.props.product._id !== 'new_product' ? true : false
     }
   }
 
@@ -38,21 +36,18 @@ class Product extends Component {
     });
   }
 
-  handleStore() {
+  handleStore(product) {
     this.setState({
-      editBtn: true,
-      closeBtn: true,
+      editBtn: true
     });
+
+    this.props.store(product);
   }
 
-  handleFieldsChange(name, e) {
+  _handleFieldsChange(name, e) {
     e.preventDefault();
     this.setState({
-      product: update(this.state.product, {
-        [name]: {
-          $set: e.target.value
-        }
-      })
+      [name]: e.target.value
     });
   }
 
@@ -61,7 +56,11 @@ class Product extends Component {
     if (this.state.editBtn) {
       productRendered = (
         <div>
-          <ProductInfo product={this.state.product} />
+          <ProductInfo
+            title={this.state.product.title}
+            description={this.state.product.description}
+            price={this.state.product.price}
+          />
           <button className="btn btn-success pull-right" onClick={this.handleEdit.bind(this)}>Editar</button>
         </div>
       );
@@ -69,22 +68,19 @@ class Product extends Component {
       productRendered = (
         <div>
           <ProductForm
-            storeProduct={this.handleStore.bind(this)}
-            product={this.state.product}
-            onChange={this.handleFieldsChange.bind(this)}
+            _id={this.state.product._id}
+            title={this.state.product.title}
+            description={this.state.product.description}
+            price={this.state.product.price}
+            store={this.handleStore.bind(this)}
           />
         </div>
       );
     }
 
-    let closeBtnRendered = null;
-    if (this.state.closeBtn) {
-      closeBtnRendered = (<button style={styles.close} onClick={this.props.delete.bind(null, this.state.product._id)}>x</button>);
-    }
-
     return (
-      <div key={this.state.product._id}>
-        {closeBtnRendered}
+      <div>
+        <button style={styles.close} onClick={this.props.delete.bind(null, this.props.product._id)}>x</button>
         {productRendered}
       </div>
     );

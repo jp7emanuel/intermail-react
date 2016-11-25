@@ -1,6 +1,22 @@
 import React, { Component } from 'react';
 
 class ProductForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      _id : this.props._id,
+      title : this.props.title,
+      description : this.props.description,
+      price : this.props.price
+    }
+  }
+
+  onChange(name, e) {
+    this.setState({
+      [name]: e.target.value
+    });
+  }
+
   render() {
     return (
       <div>
@@ -9,8 +25,8 @@ class ProductForm extends Component {
             name="title"
             className="form-control col-xs-3"
             placeholder="Titulo"
-            value={this.props.product.title}
-            onChange={this.props.onChange.bind(this, 'title')}
+            value={this.state.title}
+            onChange={this.onChange.bind(this, 'title')}
           />
         </div>
         <div className="form-group col-xs-3">
@@ -18,8 +34,8 @@ class ProductForm extends Component {
             name="price"
             className="form-control col-xs-3"
             placeholder="Preço"
-            value={this.props.product.price}
-            onChange={this.props.onChange.bind(this, 'price')}
+            value={this.state.price}
+            onChange={this.onChange.bind(this, 'price')}
           />
         </div>
         <div className="form-group col-xs-12">
@@ -28,12 +44,12 @@ class ProductForm extends Component {
             rows="5"
             className="form-control col-xs-3"
             placeholder="Descrição"
-            value={this.props.product.description}
-            onChange={this.props.onChange.bind(this, 'description')}
+            value={this.state.description}
+            onChange={this.onChange.bind(this, 'description')}
           />
         </div>
         <div className="form-group col-xs-12">
-          <button className="btn btn-primary pull-right" onClick={this.props.storeProduct}>Salvar</button>
+          <button className="btn btn-primary pull-right" onClick={this.props.store.bind(null, this.state)}>Salvar</button>
         </div>
       </div>
     );

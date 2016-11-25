@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import ProductList from '../Product/list';
 import list from '../../../server/products.json';
-import _ from 'lodash';
-
-const productList = _.reverse(list.products);
 
 const styles = {
   btnWarning: {
@@ -23,7 +20,7 @@ class Home extends Component {
         </legend>
         <div className="row" style={styles.row}>
           <div className="col-xs-12">
-            <ProductList list={productList}/>
+            <ProductList list={list.products}/>
           </div>
         </div>
       </div>
