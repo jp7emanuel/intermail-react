@@ -1,38 +1,79 @@
 import React, { Component } from 'react';
-import ProductItem from '../Product/item';
+import Product from '../Product/item';
+import update from 'react-addons-update';
+import _ from 'lodash';
 
 const styles = {
-  close: {
-    position: "absolute",
-    marginRight: -15,
-    marginTop: -15,
-    right: 0,
-    top: 0,
-    border: '5px solid transparent',
-    borderRadius: 50,
-    backgroundColor: 'red',
-    color: 'white',
-  },
   thumbnail: {
     position: 'relative',
     marginBottom: '2.5em'
+  },
+  btnWarning: {
+    width: '100%'
+  },
+  row: {
+    marginBottom: '3em'
+  },
+  addProductRow: {
+    marginTop: '-1.5em',
+    marginBottom: '2em'
   }
 }
 
 class ProductList extends Component {
-  render() {
-    const productsListRendered = this.props.list.map((product, i) => {
-        return (
-          <div key={product._id} className="thumbnail well text-center clearfix" style={styles.thumbnail}>
-            <button style={styles.close} onClick={this.props.deleteProduct.bind(null, product._id)}>x</button>
-            <ProductItem  informations={product} />
-            <button className="btn btn-primary pull-right" onClick={this.props.storeProduct.bind(null, product)}>Salvar</button>
-          </div>
-        );
+  constructor(props) {
+    super(props);
+    this.state = {
+      list: this.props.list,
+      addProduct: false
+    }
+  }
+
+  _makeProduct() {
+    this.setState({
+      addProduct: !this.state.addProduct
     });
+  }
+
+  deleteProduct(productId) {
+    var index = this.state.list.findIndex(item => item._id === productId);
+    this.setState({
+      list: update(this.state.list, {
+        $splice: [[index, 1]]
+      })
+    });
+  }
+
+  render() {
+    console.log(this.state.list);
+
+    const productsListRendered = this.state.list.map((product, i) => {
+      return (
+        <div key={product._id} className="thumbnail well text-center clearfix" style={styles.thumbnail}>
+          <Product product={product} delete={this.deleteProduct.bind(this)} edit={true} />
+        </div>
+      );
+    });
+
+    let newProductRendered = null;
+    if (this.state.addProduct) {
+      newProductRendered = (
+        <div className="clearfix" style={styles.addProductRow}>
+            <div className="col-xs-12 well">
+              <Product product={[]} delete={this.deleteProduct.bind(this)} store={true}/>
+            </div>
+        </div>
+      );
+    }
 
     return (
       <div>
+        <div className="row" style={styles.row}>
+          <div className="col-xs-12">
+            <a href="#" className="btn btn btn-warning" style={styles.btnWarning} onClick={this._makeProduct.bind(this)}>Adicionar Produto</a>
+          </div>
+        </div>
+        { newProductRendered }
         { productsListRendered }
       </div>
     );
