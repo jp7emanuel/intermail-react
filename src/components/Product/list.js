@@ -24,8 +24,8 @@ class ProductList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      list: this.props.list,
-      lastInsertId: _.last(this.props.list)._id,
+      list: this.props.list.length ? this.props.list : [],
+      lastInsertId: this.props.list.length ? _.last(this.props.list)._id : 0,
       addProduct: true
     }
   }
