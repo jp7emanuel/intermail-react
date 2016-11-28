@@ -11,9 +11,9 @@ class ProductForm extends Component {
     }
   }
 
-  onChange(name, e) {
+  onChange(e) {
     this.setState({
-      [name]: e.target.value
+      [e.target.name]: e.target.value
     });
   }
 
@@ -26,7 +26,7 @@ class ProductForm extends Component {
             className="form-control col-xs-3"
             placeholder="Titulo"
             value={this.state.title}
-            onChange={this.onChange.bind(this, 'title')}
+            onChange={this.onChange.bind(this)}
           />
         </div>
         <div className="form-group col-xs-3">
@@ -35,7 +35,7 @@ class ProductForm extends Component {
             className="form-control col-xs-3"
             placeholder="Preço"
             value={this.state.price}
-            onChange={this.onChange.bind(this, 'price')}
+            onChange={this.onChange.bind(this)}
           />
         </div>
         <div className="form-group col-xs-12">
@@ -45,7 +45,7 @@ class ProductForm extends Component {
             className="form-control col-xs-3"
             placeholder="Descrição"
             value={this.state.description}
-            onChange={this.onChange.bind(this, 'description')}
+            onChange={this.onChange.bind(this)}
           />
         </div>
         <div className="form-group col-xs-12">
