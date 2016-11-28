@@ -20,12 +20,6 @@ class Product extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      product: {
-        _id : this.props.product._id,
-        title : this.props.product.title,
-        description : this.props.product.description,
-        price : this.props.product.price
-      },
       editBtn: this.props.product._id !== 'new_product' ? true : false
     }
   }
@@ -57,9 +51,9 @@ class Product extends Component {
       productRendered = (
         <div>
           <ProductInfo
-            title={this.state.product.title}
-            description={this.state.product.description}
-            price={this.state.product.price}
+            title={this.props.product.title}
+            description={this.props.product.description}
+            price={this.props.product.price}
           />
           <button className="btn btn-success pull-right" onClick={this.handleEdit.bind(this)}>Editar</button>
         </div>
@@ -68,10 +62,10 @@ class Product extends Component {
       productRendered = (
         <div>
           <ProductForm
-            _id={this.state.product._id}
-            title={this.state.product.title}
-            description={this.state.product.description}
-            price={this.state.product.price}
+            _id={this.props.product._id}
+            title={this.props.product.title}
+            description={this.props.product.description}
+            price={this.props.product.price}
             store={this.handleStore.bind(this)}
           />
         </div>
