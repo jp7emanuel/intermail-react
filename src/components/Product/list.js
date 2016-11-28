@@ -25,6 +25,7 @@ class ProductList extends Component {
     super(props);
     this.state = {
       list: this.props.list,
+      lastInsertId: _.last(this.props.list)._id,
       addProduct: true
     }
   }
@@ -60,8 +61,7 @@ class ProductList extends Component {
   storeProduct(product) {
     var index = 0;
     if (product._id === 'new_product') {
-      var lastItemId = _.last(this.state.list)._id;
-      product._id = lastItemId+1;
+      product._id = this.state.lastInsertId + 1;
     } else {
       index = this.state.list.findIndex(item => item._id === product._id);
     }
@@ -70,14 +70,12 @@ class ProductList extends Component {
       list: {
         [index]: {$merge: product}
       },
-      addProduct: {$set: false}
+      addProduct: {$set: true},
+      lastInsertId: {$set: this.state.lastInsertId + 1}
     }));
-
-    this.forceUpdate();
   }
 
   render() {
-    console.log(this.state.list);
     const productsListRendered = this.state.list.map((product, i) => {
       return (
         <div key={product._id} className="thumbnail well text-center clearfix" style={styles.thumbnail}>
@@ -88,6 +86,7 @@ class ProductList extends Component {
 
     return (
       <div>
+        <pre>{JSON.stringify(this.state, null, 2)}</pre>
         <div className="row" style={styles.row}>
           <div className="col-xs-12">
             <button className="btn btn btn-warning" style={styles.btnWarning} onClick={this.makeProduct.bind(this)}>Adicionar Produto</button>
