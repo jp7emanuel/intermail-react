@@ -49,11 +49,15 @@ class ProductList extends Component {
 
   deleteProduct(productId) {
     var index = this.state.list.findIndex(item => item._id === productId);
+    var addProduct = true;
+    if (_.first(this.state.list)._id === 'new_product') {
+      addProduct = false;
+    }
     this.setState({
       list: update(this.state.list, {
         $splice: [[index, 1]]
       }),
-      addProduct: true
+      addProduct: addProduct
     });
 
   }
