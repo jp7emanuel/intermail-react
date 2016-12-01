@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Product from '../Product/item';
 import update from 'react-addons-update';
+import SortableListItem from '../Sortable';
 import _ from 'lodash';
 
 const styles = {
@@ -24,10 +25,15 @@ class ProductList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      list: this.props.list.length ? this.props.list : [],
+      draggingIndex: null,
+      items: this.props.list.length ? this.props.list : [],
       lastInsertId: this.props.list.length ? _.last(this.props.list)._id : 0,
       addProduct: true
     }
+  }
+
+  updateState(obj) {
+    this.setState(obj);
   }
 
   makeProduct() {
@@ -39,7 +45,7 @@ class ProductList extends Component {
         price: ''
       };
       this.setState({
-        list: update(this.state.list, {
+        items: update(this.state.items, {
           $unshift: [newProduct]
         }),
         addProduct: false
@@ -48,13 +54,13 @@ class ProductList extends Component {
   }
 
   deleteProduct(productId) {
-    var index = this.state.list.findIndex(item => item._id === productId);
+    var index = this.state.items.findIndex(item => item._id === productId);
     var addProduct = true;
-    if (_.first(this.state.list)._id === 'new_product') {
+    if (_.first(this.state.items)._id === 'new_product') {
       addProduct = false;
     }
     this.setState({
-      list: update(this.state.list, {
+      items: update(this.state.items, {
         $splice: [[index, 1]]
       }),
       addProduct: addProduct
@@ -67,11 +73,11 @@ class ProductList extends Component {
     if (product._id === 'new_product') {
       product._id = this.state.lastInsertId + 1;
     } else {
-      index = this.state.list.findIndex(item => item._id === product._id);
+      index = this.state.items.findIndex(item => item._id === product._id);
     }
 
     this.setState(update(this.state, {
-      list: {
+      items: {
         [index]: {$merge: product}
       },
       addProduct: {$set: true},
@@ -80,17 +86,27 @@ class ProductList extends Component {
   }
 
   render() {
-    const productsListRendered = this.state.list.map((product, i) => {
+    var self = this;
+
+    const productsListRendered = this.state.items.map((product, i) => {
       return (
         <div key={product._id} className="thumbnail well text-center clearfix" style={styles.thumbnail}>
-          <Product product={product} delete={this.deleteProduct.bind(this)} store={this.storeProduct.bind(this)} />
+          <SortableListItem
+            key={product._id}
+            updateState={self.updateState.bind(this)}
+            items={self.state.items}
+            draggingIndex={self.state.draggingIndex}
+            sortId={product._id}
+            outline="list"
+          >
+            <Product product={product} delete={self.deleteProduct.bind(this)} store={self.storeProduct.bind(this)} />
+          </SortableListItem>
         </div>
       );
     });
 
     return (
       <div>
-        <pre>{JSON.stringify(this.state, null, 2)}</pre>
         <div className="row" style={styles.row}>
           <div className="col-xs-12">
             <button className="btn btn btn-warning" style={styles.btnWarning} onClick={this.makeProduct.bind(this)}>Adicionar Produto</button>
